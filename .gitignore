@@ -172,3 +172,5 @@ eval/eval-*
 
 # Symlinks
 tests/fixtures
+
+.DS_Store
