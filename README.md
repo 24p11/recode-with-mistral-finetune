@@ -8,19 +8,37 @@ This repo is a fork of the original [`mistral-finetune` ](https://github.com/mis
 The purpurse of this fork is to help information medical teams to finetune Mistral model on the ICD-10 coding task (in french) with so called annotated data :
 - data = clinical notes (1 note or the concatenation of all the notes available for the patient in EMR). The restriction is that the model can only take a fixed number of token as entry.
 - annotation = ICD-10 codes of the PMSI resume. 2 formats are possible
-  * when using classification : lits of code (ex [C509, I10,...])
-  * when using generative model : definition of the code (code) (ex : Hypertention artérielle primitive (I10)).
+  * when using classification : lits of code (ex [C509, I10,...]) - work in progress
+  * when using generative model : definition of the code (code) (ex : Hypertention artérielle primitive (I10)). - examples in this projet.
 
-For this finetuning a generative model we can use 2 paradigm :
-- Next token prediction : you give the model a long text, and the task is to prodict next word. For ICD-10 coding, we train the model will on a text which is the concatenation of the note and ICD-10 coding. This task will princilally help the model to learn contextualised reprensentations of medical words of the clinical note and of the of ICD-10 definitions and codes/ 
+For the second, we want to finetune of a generative model. We can use 2 paradigms :
+- Next token prediction : you give the model a long text, and the task is to prodict next word. For ICD-10 coding, we train the model will on a text which is the concatenation of the note and ICD-10 coding. This task will help the model to learn contextualised reprensentations of medical words from the clinical notes and of the of ICD-10 definitions and codes
 - Instruction prediction : the model here is seen as an assistant. You give to the assistant a context (medical ICD-10 coding from clinical notes) and a question (what codes will you choose for the following clinical note), and the assistant will give a correct answer (the ICD-10 codes).
 
-The project contains 3 notebooks (```tutorials/```):
+The project give example of this finetuning that can run of google collab and in your own environements. To help get to grips with the code we also provide a synthtic dataset with the method to produce it.
+
+So the project contains 3 notebooks (```tutorials/```):
 - <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/tutorials/generate_fictives_notes.ipynb">
-  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/> </a> generate_fictives_notes.ipynb : Some fictional sample data (annoted clinical notes with ICD-10 codes) have been generated with [Mistral AI API](https://docs.mistral.ai/api/). 
+   generate_fictives_notes.ipynb </a>  : Try to produce fictionnal data with Mistral AI API. Some fictional sample data (annoted clinical notes with ICD-10 codes) have been generated and are available in the sample_data folder :
+   
+   * <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/sample_data/text.csv">Texts </a>
+   * <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/sample_data/codes.csv">Codes </a>
 - <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/tutorials/prepare_data_for_generative_finetuning.ipynb">
-  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/> </a> prepare_data_for_generative_finetuning.ipynb : prepare data for training 
-- <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/tutorials/mistral_finetune_7b.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab mistral_finetune_7b"/></a> mistral_finetune_7b.ipynb : execute training and perform eveluation with model Mistral-7B 
+  prepare_data_for_generative_finetuning.ipynb </a>  : In order to feed the model, data need reformating. This notebook aims to prepare the data produced at the previous step. The preprocessing has already been done on the fictional sample data and are also avaiblable in ```sample_data``` folder :
+  
+   * Next token prediction (text)
+      
+      - <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/sample_data/text.csv">train_text.jsonl</a>
+      - <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/sample_data/codes.csv">val_text.jsonl</a> 
+      - <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/sample_data/codes.csv">test_text.jsonl</a> 
+    
+    * Instruction prediction (instruct)
+      
+      - <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/sample_data/text.csv">train_instruct.jsonl</a>
+      - <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/sample_data/codes.csv">val_instruct.jsonl</a> 
+      - <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/sample_data/codes.csv">test_instruct.jsonl</a> 
+
+- <a target="_blank" href="https://github.com/24p11/recode-with-mistral-finetune/blob/main/tutorials/mistral_finetune_7b.ipynb">mistral_finetune_7b.ipynb</a>  : finnaly perform training and eveluation of the model (ex Mistral-7B) 
 
 Fictional data are available in dir ```sample_data/```, so you can test the code on Colab or on your own infra. 
 
